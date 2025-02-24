@@ -3,7 +3,7 @@
 1.arg count
 
 - length not present
-- no ext ra parameters allowed
+- no extra parameters allowed
 
   2.invalid length
 

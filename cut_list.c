@@ -26,16 +26,17 @@ void cutlist_free(CutList *cl) {
 
 CutList *cutlist_add(CutList *cl, PieceLengthValue pv) {
   PieceGroup *groups = vec_items(cl->groups);
+
   cl->remainder -= pv.length;
   cl->total_value += pv.value;
-  for (int xx = 0; xx < cl->groups->length; xx++) {
-    if (pvs_equal(&groups[xx].pv, &pv)) {
-      groups[xx].count++;
+  for (int group_ix = 0; group_ix < cl->groups->length; group_ix++) {
+    if (pvs_equal(&groups[group_ix].pv, &pv)) {
+      groups[group_ix].count++;
       return cl;
     }
   }
-  PieceGroup new_group = (PieceGroup){.pv = pv, .count = 1};
-  vec_add(cl->groups, &new_group);
+  PieceGroup g = (PieceGroup){.pv = pv, .count = 1};
+  vec_add(cl->groups, &g);
   return cl;
 }
 
@@ -55,9 +56,9 @@ CutList *choose_best_cuts(CutList *starting_cutlist, Vec pv) {
         cutlist_free(best_option);
       }
       best_option = possible_option;
-      continue;
+    } else {
+      cutlist_free(possible_option);
     }
-    cutlist_free(possible_option);
   }
   cutlist_free(starting_cutlist);
   return best_option;
